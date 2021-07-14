@@ -101,7 +101,7 @@ To start the program run,
 
    The rest is the same as that for Windows
 
-### Adroid/iOS
+### Android/iOS
 
  Currently **GramUp** doesn't support automatic backup and restore on Android/iOS. You could backup files manually by sending them to the chat you selected for backup ( must be sent as document ) with the path to where you want it restored as the caption.
 
