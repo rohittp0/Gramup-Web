@@ -1,3 +1,6 @@
+if ('serviceWorker' in navigator)
+    navigator.serviceWorker.register('/sw.js', {scope: '/'}).then();
+
 const inputs = document.querySelectorAll("body > section input");
 
 function setInputState(state){
