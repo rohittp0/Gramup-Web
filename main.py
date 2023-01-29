@@ -1,3 +1,4 @@
+import asyncio
 import shutil
 from glob import glob
 from pathlib import Path
@@ -9,6 +10,7 @@ from starlette.requests import Request
 from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
+from starlette.websockets import WebSocket
 from telethon import TelegramClient
 
 from constants import API_ID, API_HASH
@@ -40,6 +42,26 @@ def get_safe_path(path) -> str:
         path = path[:-1]
 
     return path
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+
+    qr = await client.qr_login()
+    await websocket.send_json({"url": qr.url, "type": "qr"})
+
+    while True:
+        try:
+            if await qr.wait(10):
+                break
+        except asyncio.exceptions.TimeoutError:
+            await qr.recreate()
+            await websocket.send_json({"url": qr.url, "type": "qr"})
+
+    await websocket.send_json({"type": "connection", "status": "connected"})
+
+    await websocket.close()
 
 
 @app.get("/sw.js")
@@ -93,16 +115,14 @@ async def create_upload_files(uploaded_files: list[UploadFile], parent: str | No
 
 
 @app.get("/login")
-async def login(code: bool, request: Request):
+async def login(request: Request):
     if not client.is_connected():
         await client.connect()
 
     if await client.is_user_authorized():
         return RedirectResponse(url="/", status_code=302)
 
-    qr = await client.qr_login()
-
-    context = {"request": request, "qr": qr}
+    context = {"request": request}
 
     return templates.TemplateResponse("login.html", context=context)
 

@@ -20,3 +20,9 @@ main {
     justify-content: center;
     height: 100vh;
 }
+
+#qrcode{
+    display: flex;
+    justify-content: center;
+    margin: 2rem;
+}
