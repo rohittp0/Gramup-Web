@@ -5,15 +5,17 @@ from pathlib import Path
 import shortuuid
 from fastapi import FastAPI, UploadFile, Form
 from fastapi.responses import RedirectResponse
-from preview_generator.exception import UnsupportedMimeType, UnavailablePreviewType
-from preview_generator.manager import PreviewManager
 from starlette.requests import Request
 from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-from wand.exceptions import PolicyError
+from telethon import TelegramClient
 
+from constants import API_ID, API_HASH
+
+client = TelegramClient('anon', API_ID, API_HASH)
 app = FastAPI()
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 upload_path = "static/uploads"
@@ -23,7 +25,6 @@ icons_path = "static/icons"
 Path(upload_path).mkdir(parents=True, exist_ok=True)
 Path(share_path).mkdir(parents=True, exist_ok=True)
 
-manager = PreviewManager(f"{icons_path}/generated", create_folder=True)
 templates = Jinja2Templates(directory="templates")
 
 
@@ -43,7 +44,7 @@ def get_safe_path(path) -> str:
 
 @app.get("/sw.js")
 def get_sw():
-    return FileResponse("static/sw.js", media_type="text/javascript")
+    return FileResponse("static/js/sw.js", media_type="text/javascript")
 
 
 @app.get("/manifest.json")
@@ -81,14 +82,36 @@ async def create_upload_files(uploaded_files: list[UploadFile], parent: str | No
     path = f"{upload_path}/{parent}"
 
     for file in uploaded_files:
-        with open(f"{path}/{shortuuid.ShortUUID().random(length=8)}{file.filename}", "wb+") as out:
+        out_path = f"{path}/{shortuuid.ShortUUID().random(length=8)}{file.filename}"
+
+        with open(out_path, "wb+") as out:
             shutil.copyfileobj(file.file, out)
+
+        await client.send_file('me', out_path, caption=out_path, force_document=True)
 
     return RedirectResponse(url=f"/{parent}", status_code=302)
 
 
+@app.get("/login")
+async def login(code: bool, request: Request):
+    if not client.is_connected():
+        await client.connect()
+
+    if await client.is_user_authorized():
+        return RedirectResponse(url="/", status_code=302)
+
+    qr = await client.qr_login()
+
+    context = {"request": request, "qr": qr}
+
+    return templates.TemplateResponse("login.html", context=context)
+
+
 @app.get("/{folder:path}")
 async def files(request: Request, folder="", error=""):
+    if not client.is_connected() or not await client.is_user_authorized():
+        return RedirectResponse(url="/login", status_code=302)
+
     object_list = []
 
     folder = get_safe_path(folder)
@@ -109,19 +132,10 @@ async def files(request: Request, folder="", error=""):
         if Path(file).is_dir():
             icon = f"{icons_path}/folder.webp"
             file = get_safe_path(f"{folder}/{name}")
+        elif file.split(".")[-1] in ["png", "jpg", "jpeg", "webp"]:
+            icon = file
         else:
             icon = f"{icons_path}/unknown.webp"
-
-            try:
-                icon = manager.get_jpeg_preview(file, width=100, height=100)
-            except FileNotFoundError:
-                icon = manager.get_jpeg_preview(file, width=100, height=100, force=True)
-            except UnsupportedMimeType:
-                pass
-            except UnavailablePreviewType:
-                pass
-            except PolicyError:
-                pass
 
         object_list.append({"url": f"/{file}", "icon": f"/{icon}", "name": name[8:] or name})
 

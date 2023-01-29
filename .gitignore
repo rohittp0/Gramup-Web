@@ -2,3 +2,5 @@
 venv/
 static/uploads/
 static/icons/generated/
+anon.session
+constants.py
