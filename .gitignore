@@ -4,3 +4,7 @@ static/uploads/
 static/icons/generated/
 anon.session
 constants.py
+next-env.d.ts
+yarn-error.log
+.next/
+node_modules/
