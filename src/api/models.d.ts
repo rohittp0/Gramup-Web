@@ -1,4 +1,5 @@
 export interface File {
+    folder: boolean;
     name: string;
     path: string;
     id: string;

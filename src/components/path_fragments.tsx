@@ -1,17 +1,29 @@
 import Link from "next/link";
-import { ChevronRightIcon } from '@heroicons/react/24/outline'
+import {ChevronRightIcon, HomeIcon} from '@heroicons/react/24/solid'
 
 export default function PathFragments({path}: { path: string }) {
     return (
-        <div className="flex items-center flex-row bg-blue-900 p-3 rounded-md">
-            {path.split("/").map((part, index) => (
-                <div key={index} className="flex">
-                    {index > 0 && <ChevronRightIcon className="h-6 w-6" />}
-                    <Link href={`/?path=${path.split("/").slice(0, ++index).join("/")}`}>
-                        <p className="px-4">{part}</p>
+        <nav
+            className="flex px-5 py-3 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
+            aria-label="Breadcrumb">
+            <ol className="inline-flex items-center">
+                <li className="inline-flex items-center mx-2">
+                    <Link href="/"
+                          className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                        <HomeIcon width={20} height={20} className="text-gray-500"/>
                     </Link>
-                </div>
-            ))}
-        </div>
+                </li>
+                {path.split("/").map((part, index) => (
+                    <li key={index} className="inline-flex items-center">
+                        {index > 0 && <ChevronRightIcon className="h-5 w-5 text-gray-400 mx-2"/>}
+                        <Link href={`/?path=${path.split("/").slice(0, ++index).join("/")}`}
+                              className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
+                        >
+                            {part}
+                        </Link>
+                    </li>
+                ))}
+            </ol>
+        </nav>
     )
 }
