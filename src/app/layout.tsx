@@ -3,7 +3,7 @@
 import './globals.css'
 import {Inter} from 'next/font/google'
 import Image from "next/image";
-import PathFragments from "@/components/path_fragments";
+import PathFragments from "@/components/PathFragments";
 import {useSearchParams} from "next/navigation";
 import {ReactNode} from "react";
 
