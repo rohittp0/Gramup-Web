@@ -37,11 +37,11 @@ export default function FileListing({data, fileAction, folderAction} : FileListi
                     {data?.map((file, index) => !file.folder && (
                         <div key={index} className="flex flex-col items-center m-2">
                             <button
-                                className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg transition duration-200"
+                                className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg transition duration-200 focus:bg-gray-400"
                                 onClick={() => fileAction(file)}
                                 style={{width: 100, height: 100}}
                             >
-                                <FileIcon extension={file.name}/>
+                                <FileIcon extension={file.name} />
                             </button>
                         </div>
                     ))}
