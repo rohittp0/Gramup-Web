@@ -49,12 +49,12 @@ export default function FileChooserModal({isOpen, onClose, path}: FileChooserMod
     if (!isOpen) return null;
 
     return (
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div className="fixed z-10 inset-0 overflow-y-auto top-20 lg:top-10">
+            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block">
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
                 <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">​</span>
                 <div
-                    className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:w-full">
                     <div className="bg-white pt-3 pb-4 sm:pb-4">
                         <div className="sm:flex sm:items-start">
                             <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
@@ -95,7 +95,6 @@ export default function FileChooserModal({isOpen, onClose, path}: FileChooserMod
                     </div>
                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                         <button
-                            disabled={!selectedFile || !selectedFolder}
                             type="button"
                             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
                             onClick={() => scheduleAction(false)}
@@ -106,7 +105,6 @@ export default function FileChooserModal({isOpen, onClose, path}: FileChooserMod
                         <button
                             type="button"
                             className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                            disabled={!selectedFolder}
                             onClick={() => scheduleAction(true)}
                         >
                             <ArrowPathIcon className="h-5 w-5 mr-2"/>
