@@ -4,15 +4,19 @@ import './globals.css'
 import {Inter} from 'next/font/google'
 import Image from "next/image";
 import PathFragments from "@/components/PathFragments";
-import {useSearchParams} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {ReactNode} from "react";
 
 const inter = Inter({subsets: ['latin']})
 
-interface Props { children: ReactNode }
+interface Props {
+    children: ReactNode
+}
 
-export default function RootLayout({ children }: Props) {
+export default function RootLayout({children}: Props) {
     const path = useSearchParams().get("path") || "";
+
+    const router = useRouter();
 
     return (
         <html lang="en">
@@ -31,7 +35,7 @@ export default function RootLayout({ children }: Props) {
                             GramUp
                         </span>
                 </div>
-                {path && <PathFragments path={path}/>}
+                {path && <PathFragments path={path} onPathChange={(param) => router.push(`/?path=${param}`)}/>}
             </div>
         </nav>
         {children}

@@ -12,3 +12,9 @@ export interface QRData{
     status: "connected" | "disconnected" | "pending";
     qr: string;
 }
+
+export interface Task {
+    id: string;
+    name: string;
+    status: "running" | "done" | "error";
+}
