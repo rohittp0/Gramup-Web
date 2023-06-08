@@ -36,12 +36,12 @@ export default function FileChooserModal({isOpen, onClose, path}: FileChooserMod
     }, [isOpen, selectedFolder]);
 
     function scheduleAction(sync: boolean) {
-        const path = (sync ? selectedFolder : (selectedFile || selectedFolder))?.path;
-        if (!path) return;
+        const source = (sync ? selectedFolder : (selectedFile || selectedFolder))?.path;
+        if (!source) return;
 
         const action = sync ? "sync" : "upload";
 
-        post<Task>({path, action})(TASKS_URL)
+        post<Task>({source, path, action})(TASKS_URL)
             .then(() => router.push("/tasks"))
             .catch(() => setData(undefined));
     }
