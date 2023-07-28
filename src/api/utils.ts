@@ -29,8 +29,8 @@ export function post<model>(params: Record<string, string>) {
     };
 }
 
-export function openFile(fileId: string) {
-    window.open(`${FILE_URL}?id=${fileId}`, '_blank');
+export function openFile(path: string) {
+    window.open(`${FILE_URL}${path}`, '_blank');
 }
 
 export function toHumanTime(date: string | Date): string {
