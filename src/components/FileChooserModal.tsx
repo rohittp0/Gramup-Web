@@ -41,7 +41,7 @@ export default function FileChooserModal({isOpen, onClose, path}: FileChooserMod
 
         const action = sync ? "sync" : "upload";
 
-        post<Task>({source, path, action})(TASKS_URL)
+        post<Task>({source, destination: path, action})(TASKS_URL)
             .then(() => router.push("/tasks"))
             .catch(() => setData(undefined));
     }

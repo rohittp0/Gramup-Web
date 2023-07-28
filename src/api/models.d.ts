@@ -17,4 +17,5 @@ export interface Task {
     id: string;
     name: string;
     status: "running" | "done" | "error";
+    schedule_time: string;
 }

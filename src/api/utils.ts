@@ -14,7 +14,7 @@ export function get<model>(params: Record<string, string>) {
 
 export function post<model>(params: Record<string, string>) {
     return async (url: string) => {
-      const response = await fetch(url, {
+        const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -29,6 +29,25 @@ export function post<model>(params: Record<string, string>) {
     };
 }
 
-export function openFile(fileId: string){
+export function openFile(fileId: string) {
     window.open(`${FILE_URL}?id=${fileId}`, '_blank');
+}
+
+export function toHumanTime(date: string | Date): string {
+    if (typeof date === "string")
+        date = new Date(date);
+
+    const now = Date.now();
+    const diff = now - date.getTime();
+
+    if (diff > 24 * 3600000)
+        return date.toDateString();
+
+    if (diff > 3600000)
+        return `${Math.round(diff / 3600000)} Hours Ago`;
+
+    if (diff > 60000)
+        return `${Math.round(diff / 60000)} Minutes Ago`;
+
+    return `${Math.round(diff / 1000)} Seconds Ago`;
 }
